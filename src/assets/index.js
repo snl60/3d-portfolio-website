@@ -43,6 +43,8 @@ import shopify from "./company/shopify.png";
 import starbucks from "./company/starbucks.png";
 import tesla from "./company/tesla.png";
 // added
+import incitevr from "./company/incitevr.png";
+import glimpse from "./company/glimpse.png";
 import usv from "./company/usv.png";
 import arbor from "./company/arbor.png";
 import lopezmchugh from "./company/lopezmchugh.png";
@@ -149,6 +151,8 @@ export {
   lopezmchugh,
   turelk,
   colorado,
+  glimpse,
+  incitevr,
   // Projects
   brainstem,
   brainstem1,

@@ -1,10 +1,10 @@
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { projects } from '../constants';
-import { FaGithub } from 'react-icons/fa';
-import { SectionWrapper } from '../hoc';
-import PagesNavbar from './PagesNavbar';
-import Modal from 'react-modal';
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { projects } from "../constants";
+import { FaGithub } from "react-icons/fa";
+import { SectionWrapper } from "../hoc";
+// import PagesNavbar from "./PagesNavbar";
+import Modal from "react-modal";
 
 const ProjectPage = () => {
   const { projectId } = useParams();
@@ -18,11 +18,7 @@ const ProjectPage = () => {
   }, []);
 
   if (!project) {
-    return (
-      <div className="text-white p-5">
-        Project not found!
-      </div>
-    );
+    return <div className="p-5 text-white">Project not found!</div>;
   }
 
   const images = [
@@ -64,7 +60,7 @@ const ProjectPage = () => {
 
   const goToNextImage = () => {
     setCurrentImageIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex +1
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
@@ -72,29 +68,29 @@ const ProjectPage = () => {
     <div className="p-5">
       {/*<PagesNavbar />*/}
       <h1 className="text-white font-bold text-[30px] mb-3">{project.name}</h1>
-      <p 
+      <p
         className="text-secondary text-[17px]"
         dangerouslySetInnerHTML={{ __html: project.description }}
       />
       {project.source_code_link !== "None" && (
         <div className="mt-5">
-            <a 
-              href={project.source_code_link} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 hover:text-blue-700"
-            >
-              <FaGithub size={20} />
-              <span>View Code on GitHub</span>
-            </a>
+          <a
+            href={project.source_code_link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 hover:text-blue-700"
+          >
+            <FaGithub size={20} />
+            <span>View Code on GitHub</span>
+          </a>
         </div>
       )}
 
       {/* Container for video and images */}
-      <div className="mt-5 flex flex-col items-center w-full max-w-screen-lg mx-auto">
+      <div className="flex flex-col items-center w-full max-w-screen-lg mx-auto mt-5">
         {/* YouTube embedded video section */}
         {project.video && (
-          <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+          <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
             <iframe
               width="1056"
               height="594"
@@ -109,13 +105,13 @@ const ProjectPage = () => {
         )}
 
         {/* Image gallery section */}
-        <div className="mt-5 flex flex-col gap-4 items-center w-full">
+        <div className="flex flex-col items-center w-full gap-4 mt-5">
           {images.map((image, index) => (
             <img
               key={index}
               src={image}
               alt={`${project.name} screenshot ${index + 1}`}
-              className="w-full max-w-screen-lg h-auto rounded-2xl cursor-pointer mx-auto"
+              className="w-full h-auto max-w-screen-lg mx-auto cursor-pointer rounded-2xl"
               onClick={() => openModal(index)}
             />
           ))}
@@ -127,39 +123,35 @@ const ProjectPage = () => {
         onRequestClose={closeModal}
         className="modal-overlay"
         style={{
-          overlay: { backgroundColor: 'rgb(5 8 22 / var(--tw-bg-opacity))' },
-          content: { inset: 'auto', padding: 0, border: 'none', background: 'none' },
+          overlay: { backgroundColor: "rgb(5 8 22 / var(--tw-bg-opacity))" },
+          content: {
+            inset: "auto",
+            padding: 0,
+            border: "none",
+            background: "none",
+          },
         }}
       >
         <div className="modal-content">
           {/* Close Modal Button */}
-          <button
-            onClick={closeModal}
-            className="close-button"
-          >
+          <button onClick={closeModal} className="close-button">
             &times;
           </button>
 
           {/* Left Arrow (previous image) Button */}
-          <button
-            onClick={goToPreviousImage}
-            className="left-arrow"
-          >
+          <button onClick={goToPreviousImage} className="left-arrow">
             &#9664;
           </button>
 
           {/* Display Current Image */}
-          <img 
-            src={images[currentImageIndex]} 
-            alt="Full Screen View" 
+          <img
+            src={images[currentImageIndex]}
+            alt="Full Screen View"
             className="modal-image"
           />
 
           {/* Right Arrow (next image) Button */}
-          <button
-            onClick={goToNextImage}
-            className="right-arrow"
-          >
+          <button onClick={goToNextImage} className="right-arrow">
             &#9654;
           </button>
         </div>
@@ -168,4 +160,5 @@ const ProjectPage = () => {
   );
 };
 
-export default SectionWrapper(ProjectPage, "");
+const WrappedProjectPage = SectionWrapper(ProjectPage, "");
+export default WrappedProjectPage;

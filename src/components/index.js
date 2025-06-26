@@ -9,6 +9,7 @@ import Feedbacks from './Feedbacks';
 import Contact from './Contact';
 import ProjectPage from './ProjectPage';
 import PagesNavbar from './PagesNavbar';
+import ServiceCard from './ServiceCard';
 
 export {
   Hero,
@@ -19,10 +20,11 @@ export {
   Projects,
   Feedbacks,
   Contact,
-  EarthCanvas, 
-  BallCanvas, 
-  ComputersCanvas, 
+  EarthCanvas,
+  BallCanvas,
+  ComputersCanvas,
   StarsCanvas,
   ProjectPage,
-  PagesNavbar
+  PagesNavbar,
+  ServiceCard
 }
