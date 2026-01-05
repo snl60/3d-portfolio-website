@@ -3,16 +3,19 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Preload, useGLTF } from '@react-three/drei';
 
 import CanvasLoader from '../Loader';
+import WebGLErrorBoundary from './WebGLErrorBoundary';
+import { isWebGLSupported } from '../../utils/webgl';
+import { herofallback } from '../../assets';
 
 const Computers = ({ isMobile }) => {
   const { scene } = useGLTF('./desktop_pc/scene.gltf', true);
-  
+
   useEffect(() => {
     if (scene) {
       scene.traverse((object) => {
         if (object.isMesh && object.geometry) {
           const position = object.geometry.attributes.position;
-          
+
           if (position) {
             for (let i = 0; i < position.count; i++) {
               const x = position.getX(i);
@@ -59,7 +62,7 @@ const Computers = ({ isMobile }) => {
     <mesh>
       <hemisphereLight intensity={1.5} groundColor="black" />
       <pointLight intensity={5} />
-      <spotLight 
+      <spotLight
         position={[-20, 15, 10]}
         angle={0.12}
         penumbra={1}
@@ -67,7 +70,7 @@ const Computers = ({ isMobile }) => {
         castShadow
         shadow-mapSize={1024}
       />
-      <primitive 
+      <primitive
         object={scene}
         scale={isMobile ? 0.7 : 0.75}
         position={isMobile ? [0, -2, -2.2] : [0, -2.5, -1.5]}
@@ -79,9 +82,15 @@ const Computers = ({ isMobile }) => {
 
 const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
   const [touchStartY, setTouchStartY] = useState(0);
   const canvasRef = useRef();
   const SCROLL_MULTIPLIER = 100;
+
+  useEffect(() => {
+    // Check WebGL support on mount
+    setWebGLSupported(isWebGLSupported());
+  }, []);
 
   useEffect(() => {
     // Add a listener for changes to the screen size
@@ -101,7 +110,7 @@ const ComputersCanvas = () => {
       mediaQuery.removeEventListener('change', handleMediaQueryChange);
     }
   }, []);
-  
+
   // Touch start handler
   const handleTouchStart = (e) => {
     setTouchStartY(e.touches[0].clientY);
@@ -117,27 +126,40 @@ const ComputersCanvas = () => {
     setTouchStartY(touchY);
   }
 
-  return (
-    <Canvas
-      frameloop="demand"
-      shadows
-      camera={{ position: [20, 3, 5], fov: 25 }}
-      gl={{ preserveDrawingBuffer: true }}
-      ref={ canvasRef }
-    >
-      <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls 
-          enableZoom={false}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 2}
+  if (!webGLSupported) {
+    return (
+      <div className="flex items-center justify-center w-full h-full">
+        <img
+          src={herofallback}
+          alt="3D Computer Setup"
+          className="object-contain max-w-full max-h-full"
         />
-        <Computers isMobile={isMobile} />
-      </Suspense>
+      </div>
+    );
+  }
 
-      <Preload all />
-    </Canvas>
+  return (
+    <WebGLErrorBoundary>
+      <Canvas
+        frameloop="demand"
+        shadows
+        camera={{ position: [20, 3, 5], fov: 25 }}
+        gl={{ preserveDrawingBuffer: true }}
+        ref={canvasRef}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <OrbitControls
+            enableZoom={false}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 2}
+          />
+          <Computers isMobile={isMobile} />
+        </Suspense>
+
+        <Preload all />
+      </Canvas>
+    </WebGLErrorBoundary>
   )
 }
-
 
 export default ComputersCanvas;

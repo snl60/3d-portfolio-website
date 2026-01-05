@@ -4,10 +4,16 @@ import { FaArrowDown } from 'react-icons/fa';
 import { styles } from '../styles';
 import { BallCanvas } from './canvas';
 import { technologies, technologiesMobile } from '../constants';
+import { isWebGLSupported } from '../utils/webgl';
 
 const Tech = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: technologies.length });
+
+  useEffect(() => {
+    setWebGLSupported(isWebGLSupported());
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 500px');
@@ -20,7 +26,7 @@ const Tech = () => {
     mediaQuery.addEventListener('change', handleMediaQueryChange);
     return () => mediaQuery.removeEventListener('change', handleMediaQueryChange);
   }, []);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       if (!isMobile) return;
@@ -50,6 +56,10 @@ const Tech = () => {
   const techArray = isMobile ? technologiesMobile : technologies;
   const limitedTechArray = isMobile ? techArray.slice(visibleRange.start, visibleRange.end) : techArray;
 
+  if (!webGLSupported) {
+    return null;
+  }
+
   return (
     <div className="w-full max-w-5xl mx-auto my-8 px-4 flex flex-col items-center justify-center">
       <div className="flex flex-row flex-wrap justify-center gap-7">
@@ -59,7 +69,7 @@ const Tech = () => {
           </div>
         ))}
       </div>
-      
+
       <div className="mt-1 flex flex-col justify-center items-center">
         {/* Down Arrow Icon */}
         {isMobile && (

@@ -5,9 +5,15 @@ import { FaArrowDown } from 'react-icons/fa';
 import { styles } from '../styles';
 import { ComputersCanvas } from './canvas';
 import { rotate } from '../assets';
+import { isWebGLSupported } from '../utils/webgl';
 
 const Hero = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
+
+  useEffect(() => {
+    setWebGLSupported(isWebGLSupported());
+  }, []);
 
   useEffect(() => {
     // Add a listener for changes to the screen size
@@ -27,7 +33,7 @@ const Hero = () => {
       mediaQuery.removeEventListener('change', handleMediaQueryChange);
     }
   }, []);
-  
+
   return (
     <section className="relative w-full h-screen mx-auto overflow-y-auto">
       <div className={`${styles.paddingX} absolute inset-0 top-[75px] max-w-7xl mx-auto flex flex-row items-start gap-5`}> {/*Changed to top-[75px] from top-[120px]*/}
@@ -66,7 +72,8 @@ const Hero = () => {
           </div>
         </a> */}
 
-        {/* 360-degree Icon */}
+        {/* 360-degree Icon or WebGL warning */}
+        {webGLSupported ? (
           <img
             src={rotate}
             alt="Rotate"
@@ -74,6 +81,11 @@ const Hero = () => {
             width="60"
             height="60"
           />
+        ) : (
+          <p className="text-secondary text-sm italic">
+            Enable hardware acceleration for the best experience.
+          </p>
+        )}
 
         {/* Down Arrow Icon */}
         <a href="#about">
@@ -90,7 +102,7 @@ const Hero = () => {
           >
             <FaArrowDown />
             <p className={`${styles.sectionSubText}`}>Click to scroll</p>
-         </motion.div>
+          </motion.div>
         </a>
       </div>
     </section>

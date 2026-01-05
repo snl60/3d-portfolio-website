@@ -13,6 +13,7 @@ import ue5 from "./ue5.png";
 import godot from "./godot.png";
 import unity from "./unity.png";
 import rotate from "./rotate.png";
+import herofallback from "./herofallback.png";
 
 // Technologies
 import css from "./tech/css.png";
@@ -113,6 +114,7 @@ export {
   menu,
   close,
   rotate,
+  herofallback,
   // Tech
   css,
   docker,

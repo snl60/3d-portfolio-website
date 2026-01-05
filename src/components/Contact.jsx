@@ -6,6 +6,7 @@ import { styles } from '../styles'
 import { EarthCanvas } from './canvas'
 import { SectionWrapper } from '../hoc'
 import { slideIn } from '../utils/motion'
+import { isWebGLSupported } from '../utils/webgl'
 
 const Contact = () => {
   const formRef = useRef();
@@ -14,9 +15,10 @@ const Contact = () => {
     email: '',
     message: '',
   })
-  
+
   const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [webGLSupported, setWebGLSupported] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,28 +42,32 @@ const Contact = () => {
       },
       'ZN3qEZeaUs6z2gcaU'
     )
-    .then(() => {
-      setLoading(false);
-      alert('Thank you. I will get back to you as soon as possible.');
+      .then(() => {
+        setLoading(false);
+        alert('Thank you. I will get back to you as soon as possible.');
 
-      setForm({
-        name: '',
-        email: '',
-        message: '',
+        setForm({
+          name: '',
+          email: '',
+          message: '',
+        })
+      }, (error) => {
+        setLoading(false)
+
+        console.log(error);
+
+        alert('Something went wrong.')
       })
-    }, (error) => {
-      setLoading(false)
-
-      console.log(error);
-
-      alert('Something went wrong.')
-    })
   }
+
+  useEffect(() => {
+    setWebGLSupported(isWebGLSupported());
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width:500px)');
     setIsMobile(mediaQuery.matches);
-    
+
     const handleMediaQueryChange = (event) => setIsMobile(event.matches);
     mediaQuery.addEventListener('change', handleMediaQueryChange);
 
@@ -72,9 +78,9 @@ const Contact = () => {
 
   return (
     <div className="xl:mt-12 xl:flex-row flex-col-reverse flex gap-10 overflow-hidden">
-      <motion.div 
+      <motion.div
         variants={slideIn("left", "tween", 0.2, 1)}
-        className="flex-[0.75] bg-black-100 p-8 rounded-2xl"
+        className={`${webGLSupported && !isMobile ? 'flex-[0.75]' : 'flex-1'} bg-black-100 p-8 rounded-2xl`}
       >
         <p className={styles.sectionSubText}>Get in touch</p>
         <h3 className={styles.sectionHeadText}>Contact.</h3>
@@ -86,7 +92,7 @@ const Contact = () => {
         >
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Name</span>
-            <input 
+            <input
               type="text"
               name="name"
               value={form.name}
@@ -97,7 +103,7 @@ const Contact = () => {
           </label>
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Email</span>
-            <input 
+            <input
               type="email"
               name="email"
               value={form.email}
@@ -108,7 +114,7 @@ const Contact = () => {
           </label>
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Message</span>
-            <textarea 
+            <textarea
               rows="7"
               name="message"
               value={form.message}
@@ -127,7 +133,7 @@ const Contact = () => {
         </form>
       </motion.div>
 
-      {!isMobile && (      
+      {webGLSupported && !isMobile && (
         <motion.div
           variants={slideIn("right", "tween", 0.2, 1)}
           className="xl:flex-1 xl:h-auto md:h-[550px] h-[350px]"
